@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: 补齐模块图与校验和
+        run: go mod tidy
+      - name: 静态检查
+        run: go vet ./...
+      - name: 单元测试（含反向用例）
+        run: go test ./...
+      - name: 构建
+        run: go build ./...

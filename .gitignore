@@ -1,0 +1,4 @@
+/iam-go
+*.test
+*.out
+/.idea/
