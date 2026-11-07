@@ -15,7 +15,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/lifeipkg/rcp-iam-go/internal/store"
+	"github.com/lifeipkg/rcp-iam/internal/store"
 )
 
 var (

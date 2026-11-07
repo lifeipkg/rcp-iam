@@ -1,4 +1,4 @@
-module github.com/lifeipkg/rcp-iam-go
+module github.com/lifeipkg/rcp-iam
 
 go 1.22
 

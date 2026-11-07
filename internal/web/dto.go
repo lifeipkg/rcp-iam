@@ -1,6 +1,6 @@
 package web
 
-import "github.com/lifeipkg/rcp-iam-go/internal/store"
+import "github.com/lifeipkg/rcp-iam/internal/store"
 
 type loginRequest struct {
 	Username string `json:"username" binding:"required"`

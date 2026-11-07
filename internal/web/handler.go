@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lifeipkg/rcp-iam-go/internal/service"
-	"github.com/lifeipkg/rcp-iam-go/internal/store"
+	"github.com/lifeipkg/rcp-iam/internal/service"
+	"github.com/lifeipkg/rcp-iam/internal/store"
 )
 
 type Handler struct {
@@ -27,14 +27,14 @@ func NewRouter(a *service.Auth) *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"status": "UP"})
 	})
 
-	r.POST("/api/v1/iam-go/login", h.login)
-	r.POST("/api/v1/iam-go/logout", h.logout)
-	r.POST("/api/v1/iam-go/introspect", h.introspect)
-	r.GET("/api/v1/iam-go/me", h.me)
-	r.GET("/api/v1/iam-go/users", h.listUsers)
-	r.POST("/api/v1/iam-go/users", h.createUser)
-	r.PUT("/api/v1/iam-go/users/:userId", h.updateUser)
-	r.PUT("/api/v1/iam-go/users/:userId/password", h.changePassword)
+	r.POST("/api/v1/iam/login", h.login)
+	r.POST("/api/v1/iam/logout", h.logout)
+	r.POST("/api/v1/iam/introspect", h.introspect)
+	r.GET("/api/v1/iam/me", h.me)
+	r.GET("/api/v1/iam/users", h.listUsers)
+	r.POST("/api/v1/iam/users", h.createUser)
+	r.PUT("/api/v1/iam/users/:userId", h.updateUser)
+	r.PUT("/api/v1/iam/users/:userId/password", h.changePassword)
 	return r
 }
 

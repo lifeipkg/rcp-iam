@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/lifeipkg/rcp-iam-go/internal/store"
+	"github.com/lifeipkg/rcp-iam/internal/store"
 )
 
 const adminPassword = "Admin@12345"

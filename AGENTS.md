@@ -1,27 +1,30 @@
-# AGENTS.md · rcp-iam-go
+# AGENTS.md · rcp-iam
 
 本仓规则。工作区级流程见 `<工作区根>/AGENTS.md`；契约见 `../rcp-contracts`。
 
 ## 本仓是什么
 
-Go + Gin 版身份与访问管理服务（服务名 `iam-go`，端口 `8086`）：登录、会话、令牌内省、
-角色授予。与 Java 版 `iam`（8085）**并行存在**，用于 Go 技术栈的独立验收；网关的逐请求
-内省仍走 `iam`，本服务不接管鉴权链。改动按标准轨处理，命中公开契约或鉴权语义须独立复核。
+平台**唯一**的身份与访问管理服务（Go + Gin，服务名 `iam`，端口 `8085`）：登录、会话、
+令牌内省、角色授予。早期 Java 版实现已退役，本仓顶替 `rcp-iam` 这个名字、端口与鉴权链；
+网关对受保护请求的逐请求内省**走本服务**，本服务不可用时网关 fail closed 返回 503。
+改动按标准轨处理，命中公开契约或鉴权语义须独立复核。
 
 | 项 | 值 |
 |---|---|
-| 服务名 / 端口 | `iam-go` / `8086` |
-| 契约 | `rcp-contracts/contracts/openapi/iam-go.yaml` |
-| 路由前缀 | `/api/v1/iam-go/**` |
+| 服务名 / 端口 | `iam` / `8085` |
+| 契约 | `rcp-contracts/contracts/openapi/iam.yaml` |
+| 路由前缀 | `/api/v1/iam/**` |
 | 上游 | `api-gateway`（透传）；`dataway`（数据面，8090） |
 | 存储 | PostgreSQL，经 `dataway` 的 HTTP 契约读写 |
+| 远程 | `lifeipkg/rcp-iam`（公开，SSH） |
 
 ## 硬约束
 
 1. **不直连数据库**（RL-005）。本仓 `go.mod` 只有 `gin`，不得出现 `pgx` / `lib/pq` /
    `database/sql` 的驱动依赖；只读走 `POST /dataway/query`（单条 SELECT、白名单表），
    写入走 `POST /dataway/execute`（服务端模板 ID）。模板登记在 `rcp-dataway` 的
-   `application.yml`，表结构在 `rcp-ops/migrations/V1.4.0`（RL-004，本仓不建表）。
+   `application.yml`，表结构在 `rcp-ops/migrations/V1.4.0__iam_store.sql`（RL-004，本仓不建表）。
+   `rcp-ontology` 的 RL-005 同时扫 `pom.xml` 与 `go.mod`，别指望只改 Java 检查能蒙混过去。
 2. **只被网关调用**。`external=false`；控制器路径与请求响应字段以契约仓为准，
    改字段先改契约再抬钉，禁止先改实现。
 3. **路由写成完整字面量**。`rcp-contracts/tools/contract_check.py` 用正则抽
@@ -34,13 +37,15 @@ Go + Gin 版身份与访问管理服务（服务名 `iam-go`，端口 `8086`）�
 6. **口令材料不出仓**。PBKDF2-HmacSHA256 + 每用户随机盐只在 `internal/service` 实现；
    响应视图不含哈希与盐，日志不打印口令与令牌。
 7. **不制造半激活**：引导账号初始化失败时服务不启动。
+8. **不写死上游地址**（RL-007）。`DATAWAY_HOST` / `DATAWAY_PORT` 分开注入，
+   清单里不出现 `http://<内部服务>:<端口>` 形式的完整 URL。
 
 ## 验证
 
 ```bash
 go mod tidy && go vet ./... && go test ./... && go build ./...
 python ../rcp-contracts/tools/contract_check.py --repo . \
-  --contract ../rcp-contracts/contracts/openapi/iam-go.yaml
+  --contract ../rcp-contracts/contracts/openapi/iam.yaml
 ```
 
 改鉴权或口令逻辑必须补反向用例：错误口令、停用账号、越权、令牌吊销后复用、

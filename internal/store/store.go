@@ -12,7 +12,7 @@ var (
 	ErrConflict    = errors.New("conflict")
 )
 
-// User 对应 rcp-ops/migrations/V1.4.0__iam_go_store.sql 的 iam_users。
+// User 对应 rcp-ops/migrations/V1.4.0__iam_store.sql 的 iam_users。
 type User struct {
 	ID           string
 	Username     string

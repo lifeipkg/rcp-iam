@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/lifeipkg/rcp-iam-go/internal/config"
-	"github.com/lifeipkg/rcp-iam-go/internal/service"
-	"github.com/lifeipkg/rcp-iam-go/internal/store"
-	"github.com/lifeipkg/rcp-iam-go/internal/web"
+	"github.com/lifeipkg/rcp-iam/internal/config"
+	"github.com/lifeipkg/rcp-iam/internal/service"
+	"github.com/lifeipkg/rcp-iam/internal/store"
+	"github.com/lifeipkg/rcp-iam/internal/web"
 )
 
 func main() {
@@ -30,6 +30,6 @@ func main() {
 		Handler:           web.NewRouter(auth),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
-	log.Printf("iam-go listening on :%s, dataway=%s", cfg.Port, cfg.DatawayURL)
+	log.Printf("iam listening on :%s, dataway=%s", cfg.Port, cfg.DatawayURL)
 	log.Fatal(srv.ListenAndServe())
 }

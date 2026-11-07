@@ -24,11 +24,11 @@ func env(key, fallback string) string {
 }
 
 func Load() Config {
-	ttlHours, err := strconv.Atoi(env("IAM_GO_TOKEN_TTL_HOURS", "8"))
+	ttlHours, err := strconv.Atoi(env("IAM_TOKEN_TTL_HOURS", "8"))
 	if err != nil || ttlHours <= 0 {
 		ttlHours = 8
 	}
-	iter, err := strconv.Atoi(env("IAM_GO_PBKDF2_ITER", "120000"))
+	iter, err := strconv.Atoi(env("IAM_PBKDF2_ITER", "120000"))
 	if err != nil || iter < 10000 {
 		iter = 120000
 	}
@@ -37,16 +37,16 @@ func Load() Config {
 	host := env("DATAWAY_HOST", "localhost")
 	port := env("DATAWAY_PORT", "8090")
 	return Config{
-		Port:       env("SERVER_PORT", "8086"),
+		Port:       env("SERVER_PORT", "8085"),
 		DatawayURL: "http://" + host + ":" + port,
 		Datasource: env("DATAWAY_DATASOURCE", "main"),
 		TokenTTL:   time.Duration(ttlHours) * time.Hour,
 		PBKDF2Iter: iter,
 		// 默认值仅供本地演示；真实部署必须覆盖（见 rcp-ops/k8s/02-secret.example.yaml 的同等做法）。
 		BootstrapUsers: map[string]string{
-			"admin":    env("IAM_GO_ADMIN_PASSWORD", "Admin@12345"),
-			"operator": env("IAM_GO_OPERATOR_PASSWORD", "Operator@12345"),
-			"viewer":   env("IAM_GO_VIEWER_PASSWORD", "Viewer@12345"),
+			"admin":    env("IAM_ADMIN_PASSWORD", "Admin@12345"),
+			"operator": env("IAM_OPERATOR_PASSWORD", "Operator@12345"),
+			"viewer":   env("IAM_VIEWER_PASSWORD", "Viewer@12345"),
 		},
 	}
 }

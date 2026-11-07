@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lifeipkg/rcp-iam-go/internal/service"
-	"github.com/lifeipkg/rcp-iam-go/internal/store"
+	"github.com/lifeipkg/rcp-iam/internal/service"
+	"github.com/lifeipkg/rcp-iam/internal/store"
 )
 
 func newTestRouter(t *testing.T) *gin.Engine {
@@ -40,7 +40,7 @@ func do(r http.Handler, method, path, body, token string) *httptest.ResponseReco
 func login(t *testing.T, r http.Handler, username, password string) string {
 	t.Helper()
 	body, _ := json.Marshal(loginRequest{Username: username, Password: password})
-	w := do(r, http.MethodPost, "/api/v1/iam-go/login", string(body), "")
+	w := do(r, http.MethodPost, "/api/v1/iam/login", string(body), "")
 	if w.Code != http.StatusOK {
 		t.Fatalf("登录失败: %d %s", w.Code, w.Body.String())
 	}
@@ -57,7 +57,7 @@ func TestLoginAndMe(t *testing.T) {
 	if token == "" {
 		t.Fatal("未签发令牌")
 	}
-	w := do(r, http.MethodGet, "/api/v1/iam-go/me", "", token)
+	w := do(r, http.MethodGet, "/api/v1/iam/me", "", token)
 	if w.Code != http.StatusOK {
 		t.Fatalf("/me 应 200，得到 %d %s", w.Code, w.Body.String())
 	}
@@ -65,22 +65,22 @@ func TestLoginAndMe(t *testing.T) {
 
 func TestUsersRequireAdmin(t *testing.T) {
 	r := newTestRouter(t)
-	if w := do(r, http.MethodGet, "/api/v1/iam-go/users", "", ""); w.Code != http.StatusUnauthorized {
+	if w := do(r, http.MethodGet, "/api/v1/iam/users", "", ""); w.Code != http.StatusUnauthorized {
 		t.Fatalf("无令牌应 401，得到 %d", w.Code)
 	}
 	viewer := login(t, r, "viewer", "Viewer@12345")
-	if w := do(r, http.MethodGet, "/api/v1/iam-go/users", "", viewer); w.Code != http.StatusForbidden {
+	if w := do(r, http.MethodGet, "/api/v1/iam/users", "", viewer); w.Code != http.StatusForbidden {
 		t.Fatalf("VIEWER 应 403，得到 %d", w.Code)
 	}
 	admin := login(t, r, "admin", "Admin@12345")
-	if w := do(r, http.MethodGet, "/api/v1/iam-go/users", "", admin); w.Code != http.StatusOK {
+	if w := do(r, http.MethodGet, "/api/v1/iam/users", "", admin); w.Code != http.StatusOK {
 		t.Fatalf("ADMIN 应 200，得到 %d", w.Code)
 	}
 }
 
 func TestIntrospectInactiveToken(t *testing.T) {
 	r := newTestRouter(t)
-	w := do(r, http.MethodPost, "/api/v1/iam-go/introspect", `{"token":"rcp_not-issued"}`, "")
+	w := do(r, http.MethodPost, "/api/v1/iam/introspect", `{"token":"rcp_not-issued"}`, "")
 	if w.Code != http.StatusOK {
 		t.Fatalf("内省无效令牌应 200，得到 %d", w.Code)
 	}

@@ -3,12 +3,12 @@ WORKDIR /src
 COPY go.mod ./
 COPY . .
 # 首次构建由 go mod tidy 生成 go.sum 并补全模块图（本机无 Go 工具链时不手抄哈希）
-RUN go mod tidy && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/iam-go .
+RUN go mod tidy && CGO_ENABLED=0 GOOS=linux go build -trimpath -o /out/iam .
 
 FROM alpine:3.20
 RUN adduser -D -u 10001 app
-COPY --from=build /out/iam-go /app/iam-go
+COPY --from=build /out/iam /app/iam
 USER app
-EXPOSE 8086
-ENV SERVER_PORT=8086
-ENTRYPOINT ["/app/iam-go"]
+EXPOSE 8085
+ENV SERVER_PORT=8085
+ENTRYPOINT ["/app/iam"]
