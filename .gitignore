@@ -2,3 +2,8 @@
 *.test
 *.out
 /.idea/
+*.iml
+
+# 本地代理工作目录（worktree、临时产物），与其余 rcp-* 仓一致：不入库。
+.agents/
+.deps/
