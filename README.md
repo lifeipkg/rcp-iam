@@ -21,11 +21,11 @@
 
 ```
 iam  --只读 SELECT-->  dataway /dataway/query  --org.postgresql--> PostgreSQL
-     --模板 ID 写入-->  dataway /dataway/execute --org.postgresql--> PostgreSQL
+     --模板 ID 写入-->  dataway /dataway/execute --pgx/v5--> PostgreSQL
 ```
 
 - 表 `iam_users` / `iam_sessions` 的 DDL 只在 `rcp-ops/migrations/V1.4.0__iam_store.sql`（RL-004）。
-- `dataway` 的表白名单与 6 个写入模板登记在 `rcp-dataway/src/main/resources/application.yml`：
+- `dataway` 的表白名单与 6 个写入模板登记在 `rcp-dataway/internal/config/dataway.yaml`：
   `iam.user.insert` / `iam.user.update` / `iam.session.insert` / `iam.session.delete` /
   `iam.session.deleteByUser` / `iam.session.cleanExpired`。
 - 会话过期判定下推到 SQL（`s.expires_at > CURRENT_TIMESTAMP`），避免跨库时间格式解析；

@@ -23,7 +23,7 @@
 1. **不直连数据库**（RL-005）。本仓 `go.mod` 只有 `gin`，不得出现 `pgx` / `lib/pq` /
    `database/sql` 的驱动依赖；只读走 `POST /dataway/query`（单条 SELECT、白名单表），
    写入走 `POST /dataway/execute`（服务端模板 ID）。模板登记在 `rcp-dataway` 的
-   `application.yml`，表结构在 `rcp-ops/migrations/V1.4.0__iam_store.sql`（RL-004，本仓不建表）。
+   `internal/config/dataway.yaml`，表结构在 `rcp-ops/migrations/V1.4.0__iam_store.sql`（RL-004，本仓不建表）。
    `rcp-ontology` 的 RL-005 同时扫 `pom.xml` 与 `go.mod`，别指望只改 Java 检查能蒙混过去。
 2. **只被网关调用**。`external=false`；控制器路径与请求响应字段以契约仓为准，
    改字段先改契约再抬钉，禁止先改实现。
