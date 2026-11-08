@@ -35,7 +35,7 @@ iam  --只读 SELECT-->  dataway /dataway/query  --org.postgresql--> PostgreSQL
 
 ## 角色与权限
 
-`ADMIN` → `patrol:dispatch`, `iam:users`；`OPERATOR` → `patrol:dispatch`；`VIEWER` → 无。
+`ADMIN` → `iam:users`, `iam:auth`；`OPERATOR` → `iam:auth`；`VIEWER` → 无。
 
 ## 接口
 

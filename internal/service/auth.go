@@ -84,9 +84,9 @@ type ChangePasswordInput struct {
 func Permissions(role string) []string {
 	switch role {
 	case "ADMIN":
-		return []string{"patrol:dispatch", "iam:users"}
+		return []string{"iam:users", "iam:auth"}
 	case "OPERATOR":
-		return []string{"patrol:dispatch"}
+		return []string{"iam:auth"}
 	default:
 		return []string{}
 	}

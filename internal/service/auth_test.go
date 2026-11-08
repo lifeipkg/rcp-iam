@@ -145,7 +145,10 @@ func TestPermissionsAreSingleSourced(t *testing.T) {
 	if got := Permissions("ADMIN"); len(got) != 2 || !HasPermission("ADMIN", "iam:users") {
 		t.Fatalf("ADMIN 权限展开错误: %v", got)
 	}
-	if HasPermission("VIEWER", "patrol:dispatch") {
-		t.Fatal("VIEWER 不应有 patrol:dispatch")
+	if HasPermission("VIEWER", "iam:users") {
+		t.Fatal("VIEWER 不应有 iam:users")
+	}
+	if !HasPermission("OPERATOR", "iam:auth") {
+		t.Fatal("OPERATOR 应能通过鉴权")
 	}
 }
